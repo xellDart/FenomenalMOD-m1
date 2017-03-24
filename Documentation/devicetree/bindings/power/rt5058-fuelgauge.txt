@@ -1,0 +1,187 @@
+RT5058 Fuel-gauge Driver Device Tree Node Proerty
+Author: Jeff Chang <jeff_chang@richtek.com>
+
+- compatible(str):
+	compatible = "rt,rt5058-fuelgauge";
+
+- rt,dtsi_version(u32 array): DTSI Version
+	rt,dtsi_version = <01 515>;	/* 01: 1st version, 515: 05/15 */
+
+- rt,battery_type(u32): Battery Type
+	rt,battery_type = <4200>;	/* 4200, 4350, 4400 ... */
+
+- rt,temp_source_table(u32):	Temperature Source Table.
+	rt,temp_source_table = <0>;	/* 0: temperateur from AP,
+								   1: form RT5058_REG_FGTEMP,
+								   2: from RT5058_REG_FGINTT,
+								   3: from RT5058_REG_FGAT */
+
+- rt,wr_bc_en(bool):	Write Battery Capacity (enable/disable)
+	rt,wr_bc_en;
+
+- rt,fg_oep_threshold(u32):	Battery Over Energy Protection Threshold
+	rt,fg_oep_threshold = <0x210a>;		/* register value */
+
+- rt,fg_outu_threshold(u32):	over/under temperature Threshold
+	rt,fg_outo_threshold = <0xff00>;	/* register vlaue */
+
+- rt,fg_uv_threshold(u32):	Under Voltage Threshold
+	rt,fg_uv_threshold = <213>; // 0~5100mV(unit: 20mV)
+
+- rt,fg_sc_step(u32): Soc Change Step
+	rt,fg_sc_step = <16>;	//(unit 0.0625%)
+
+- rt,fg_os_threshold(u32):	Over SOC Threshold
+	rt,fg_os_threshold = <0xffff>;
+
+- rt,fg_us_threshold(u32):	Under SOC Threshold
+	rt,fg_us_threshold = <0x0000>;
+
+- rt,fg_slpvol_threshold(u32):	Sleep Voltage Threshold
+	rt,fg_slpvol_threshold = <0x0096>;
+
+- rt,design_capacity(u32):
+	rt,design_capacity = <2600>;
+
+- rt,fg_op_config(u32 array):	FG op config value
+	rt,fg_op_config = <0x8400 0x0000 0x0000>;
+
+- rt,fg_soc_config(u32 array): FG soc config value
+	rt,fg_soc_config = <0x0000 0x0400>;
+
+- rt,fg_irq_mask(u32 array):	FG interrupt mask value
+	rt.fg_irq_mask = <0xc75e 0xffff>;
+
+- rt,fg_voltage_calibration(u32):
+	rt,fg_voltage_calibration = <0x0000>;
+
+- rt,fg_current_calibration(u32):
+	rt,fg_voltage_calibration = <0x8080>;
+
+- rt,cyc_adj_th(u32):	adjustment cycle count
+	rt,cyc_adj_th = <100>;
+
+- rt,cyc_adj_rat(u32):	adjustment cycle rate
+	rt,cyc_adj_raat = <0>;
+
+- rt,fg_aging_factor(u32):
+	rt,fg_aging_factor = <0x0032>;
+
+- rt,fg_deadband(u32): Dead Band
+	rt,fg_deadband = <0x0606>;
+
+- rt,fg_comp_interpolation_order(u32 array):
+	rt,fg_comp_interpolation_order = <1 1 1>;
+
+- rt,fg_comp_size(u32 array):
+	rt,fg_comp_size = <1 3 1>;
+
+- rt,fg_comp_data(u32 array):
+	rt,fg_comp_data = <3200 (-1) 1000 50 50 50 50 128 256 32100 0 1000
+			3200 0    1000 50 50 50 50 128 256 32100 0 2000
+			3200 40   1000 50 50 50 50 128 256 32100 0 3000>;
+
+- rt,offset_interpolation_order(u32 array):
+	rt,offset_interpolation_order = <2 2>; /* necessary */
+
+- rt,soc_offset_size(u32 array):
+	rt,soc_offset_size = <6 1>;
+
+- rt,soc_offset_data(u32 array):
+	rt,soc_offset_data = <0    250 (-12)
+			      15   250 (-5)
+			      19   250 (-9)
+			      20   250 (-10)
+			      100  250 0
+			      1000 250 0>;
+
+- rt,fg_function_table(u32 array):
+	rt,fg_function_table = <0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+				0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+				0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+				0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+				0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+- rt,fg_soc_table(u32 array):
+	rt,fg_soc_table = <0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+			0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+
+- interrupt-parent:
+	interrup-parent = <&rt5058>;
+
+- interrups: (index of  interrups)
+	interrupts = <127>;
+
+- interrup-names: (name of interrups)
+	interrup-names = "FULE_IRQ";
+
+- rt,use_sc_count(bool): Enable/Disable SOC Change Count
+	rt,use_sc_count;
+
+
+EX:
+
+			rt5058-fuelgauge {
+				compatible = "richtek,rt5058-fuelgauge";
+				interrupt-parent = <&rt5058>;
+				interrupts = <127>;
+				interrupt-names = "FUEL_IRQ";
+				rt,dtsi_version = <01 805>;
+				rt,battery_type = <4350>; // 4200 4350 4400
+				rt,temp_source_table = <0>;
+				rt,wr_bc_en; // with it -> enable wr_bc, without it -> disable wr_bc
+				rt,fg_oep_threshold = <0x210a>; // battery over energy protection
+				rt,fg_otut_threshold = <0xff00>; // over/under temperature
+				rt,fg_uv_threshold = <213>; // under voltage 0~5100mV(unit: 20mV)
+				rt,fg_sc_step = <16>; // soc chagne alert step (unit 0.0625%)
+				rt,fg_os_threshold = <0xffff>; // over soc
+				rt,fg_us_threshold = <0x0000>; // under soc
+				rt,fg_slpvol_threshold = <0x0096>; // sleep voltage
+				rt,design_capacity = <2100>;
+				rt,fg_op_config = <0x8200 0x0000 0x0000>;
+				rt,fg_soc_config = <0x0110 0x0408>;
+				rt,fg_irq_mask = <0xde7f 0xffff>;
+				rt,fg_voltage_calibration = <0x0000>;
+				rt,fg_current_calibration = <0x8080>;
+				rt,cyc_adj_th = <100>;
+				rt,cyc_adj_rat = <0>;
+				rt,fg_aging_factor = <0x0032>;
+				rt,fg_deadband = <0x0606>;
+				rt,fg_comp_interpolation_order = <1 1 1>;
+				rt,fg_comp_size = <1 3 1>;
+				rt,fg_comp_data = <3200 0    1000 40 25 25 57 128 256 32100 0 2100
+						   3200 150  1000 35 60 25 255 128 256 32100 0 2100
+						   3200 400  1000 55 75 105 155 128 256 32100 0 2100>;
+				rt,offset_interpolation_order = <2 2>;
+				rt,soc_offset_size = <6 1>;
+				rt,soc_offset_data = <0    250 0
+						      15   250 0
+						      19   250 0
+						      20   250 0
+						      100  250 0
+						      1000 250 0>;
+				rt,fg_function_table = <0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+				rt,fg_soc_table = <0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+				rt,use_sc_count;
+			};
+

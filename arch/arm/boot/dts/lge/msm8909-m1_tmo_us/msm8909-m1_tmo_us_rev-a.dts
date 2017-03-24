@@ -1,0 +1,78 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "msm8909-m1_tmo_us.dtsi"
+#include "../../qcom/msm8909-pm8916.dtsi"
+#include "msm8909-pm8916-m1_tmo_us.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM8909 PM8916 M1_TMO_US";
+	compatible = "qcom,msm8909";
+	qcom,board-id= <0x064 0>, /* evb1 */
+	               <0x164 0>, /* evb2 */
+	               <0x264 2>, /* rev_0 */
+	               <0x364 2>; /* rev_a */
+};
+&i2c_1 { /* Sensor VDD for REV.A */
+        st_k303b_acc@1d {
+            st,vdd_ana-supply = <&pm8916_l11_sns>;
+        };
+        st_k303b_mag@1e {
+            st,vdd_ana-supply = <&pm8916_l11_sns>;
+        };
+        rpr05210@38 {
+            Rohm,vdd-supply = <&pm8916_l11_sns>;
+        };
+};
+&rpm_bus {
+    rpm-regulator-ldoa11 {
+        status = "ok";
+        pm8916_l11_sns: regulator-l11_sns {
+            status = "ok";
+            compatible = "qcom,rpm-smd-regulator";
+            regulator-name = "8916_l11_sns";
+            qcom,set = <3>;
+            regulator-min-microvolt = <1800000>;
+            regulator-max-microvolt = <2950000>;
+            qcom,init-voltage = <2800000>;
+            regulator-always-on;
+            };
+        };
+    /* regulator settings for LCD VDDIO */
+    rpm-regulator-ldoa17 {
+        status = "okay";
+        pm8916_l17: regulator-l17 {
+            regulator-min-microvolt = <1800000>;
+            regulator-max-microvolt = <1800000>;
+            qcom,init-voltage = <1800000>;
+            status = "okay";
+        };
+    };
+};
+&pm8916_chg {
+	status = "ok";
+};
+&pm8916_bms {
+	status = "ok";
+};
+&soc {
+	battery {
+		status = "disabled";
+	};
+};
+&i2c_4 {
+	rt5058: rt5058@34 {
+		status = "disabled";
+	};
+};

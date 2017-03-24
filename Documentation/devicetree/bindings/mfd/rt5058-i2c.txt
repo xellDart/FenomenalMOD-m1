@@ -1,0 +1,236 @@
+RT5058 I2C Device Driver Device Tree Node Property
+Author: Jeff Chang <jeff_chang@richtek.com>
+
+- compatible:
+	compatible = "richtek,rt5058";
+
+- reg: slave address:
+	reg = <0x34>;
+
+- interrupt-controller:
+	interrupt-controller;
+
+- #interrups-cells:
+	#interrupt-cells = <1>;
+
+- rt,irq_pin:	GPIO Pin for RT5058 interrupts
+	rt,irq_pin = <&msmgpio 59 0x00>;
+
+- rt,i2cstmr_rsttmr(u32):	I2C Safe Timer for SDA/SCL low active
+	rt,i2cstmr_rsttmr = <0>;	/* 0: 0.5sec, 1: 0.75sec, 2: 1sec, 3: 2sec */
+
+- rt,batt_devname: battery name for communation. /* defualt is battery */
+	rt,batt_devname = "battery";
+
+- rt,chg_devname: charger name for communation.	/* default is rt5058-charger */
+	rt,chg_devname = "rt5058-charger";
+
+- rt,feul_devname: fuel-gauge name for communation. /* default is rt5058-fuelgauge */
+	rt,fuel_devname = "rt5058-fuelgauge";
+
+- rt,ac_devname: AC name for communation. /* default is ac */
+	rt,ac_devname = "ac";
+
+- rt,usb_devname: USB name for communation. /* default is usb */
+	rt,usb_devname = "usb";
+
+- rt5058-muic:		RT5058 MUIC Device Node
+	rt5058-muic {
+	};
+
+- rt5058-charger:	RT5058 CHARGER Device Node
+	rt5058-charger {
+	};
+
+- rt5058-fled:		RT5058 FLED Device Node
+	rt5058-fled {
+	};
+
+- rt5058_buck1: regulator_0: RT5058 REGULATOR Device Node
+	rt5058_buck1: regulator_0 {
+	};
+	rt5058_ldo1: regulator_1 {
+	};
+	rt5058_ldo2: regulator_2 {
+	};
+	rt5058_ldo3: regulator_3 {
+	};
+	rt5058_sldo1: regulator_4 {
+	};
+	rt5058_sldo2: regulator_5 {
+	};
+
+- rt5058-fuelgauge:	RT5058 FUELGAUGE Device Node
+	rt5058-fuelgauge {
+	};
+
+
+EX:
+i2c@f9967000 {
+	status = "ok";
+
+	rt5058: rt5058@34 {
+		compatible = "richtek,rt5058";
+		reg = <0x34>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		rt,irq_pin = <&msm_gpio 20 0>;
+		rt,i2cstmr_rsttmr = <0>; /* 0: 0.5 sec, 1: 0.75 sec, 2: 1 sec, 3: 2 sec */
+		rt,batt_devname = "battery";
+		rt,ac_devname = "ac";
+		rt,usb_devname = "usb";
+
+		rt5058-charger {
+			compatible = "richtek,rt5058-charger";
+			rt,charger-name = "rt5058-charger";
+			rt,use_te;
+			//rt,use_batdet;
+			rt,use_iinmeas;
+			rt,use_mivr;
+			rt,mivr = <4400>;
+			rt,chg_iin_vth = <4800>;
+			rt,use_aicr;
+			rt,usb_aicr = <1400>;
+			rt,usb_icc = <1400>;
+			rt,ac_aicr = <1400>;
+			rt,ac_icc = <1400>;
+			rt,chg_volt = <4350>;
+			rt,bst_volt = <5000>;
+			rt,ieoc = <50>; /* 0: Disable, 1~19: 50mA~500mA */
+			rt,prechg_volt = <2800>;
+			rt,prechg_curr = <150>;
+			rt,use_lbp; /* with it: enable low battery protection,
+						   without it:disable */
+			rt,lbp_volt = <2800>;
+			rt,backchg_time = <0>;
+			rt,iinlmt_sel = <1>; /* 0:by chg_type,
+									1:by aicr,
+									2:MAX(aicr, chg_type),
+									3:MIN(aicr, chg_type) */
+			rt,sel_swfreq = <0>;
+			rt,fixfreq = <0>;
+			rt,fc_timer = <0>; /* 0~7: 4~16hr, 8:disable timer */
+			rt,prc_timer = <0>; /* 0~2: 30,45,60 mins, 3:disable timer */
+			rt,sys_minvolt = <1>; /* 0~3: 3.5V~3.8V */
+			interrupt-parent = <&rt5058>;
+			interrupts = <124>;
+			interrupt-names = "CHG_IRQ";	// 124
+			rt,chg_irq_mask = <0xf0 0x08 0xf0 0x1f 0xff>;
+			rt,hocp = <0>; /* 0 is 2.5A, 1 is 3.5A */
+			rt,temp_level = <(-40) 10 25 70>; // temperature levels for JEITA
+			//rt,use_jeita;
+		};
+		rt5058-fled {
+			compatible = "richtek,rt5058-fled";
+			rt,control_mode = <1>; /* 0:i2c control, 1:pin control */
+			interrupt-parent = <&rt5058>;
+			interrupts = <125>;
+			interrupt-names = "FLED_IRQ";
+			rt,fled_irq_mask = <0x34 0xc0>;
+			rt,torch_en = <1 1>;
+			rt,flash_en = <1 1>;
+		};
+		rt5058_buck1: regulator_0 {
+			compatible = "richtek,rt5058-buck1";
+			interrupt-parent = <&rt5058>;
+			interrupts = <126>;
+			interrupt-names = "PMIC_IRQ";
+			regulator-name = "rt5058-buck1";
+			regulator-min-microvolt = <1000000>;
+			regulator-max-microvolt = <3000000>;
+			rt,allow_mode_mask;
+		};
+		rt5058_ldo1: regulator_1 {
+			compatible = "richtek,rt5058-ldo1";
+			regulator-name = "rt5058-ldo1";
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <3000000>;
+			rt,allow_mode_mask;
+		};
+		rt5058_ldo2: regulator_2 {
+			compatible = "richtek,rt5058-ldo2";
+			regulator-name = "rt5058-ldo2";
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <3000000>;
+			rt,allow_mode_mask;
+		};
+		rt5058_ldo3: regulator_3 {
+			compatible = "richtek,rt5058-ldo3";
+			regulator-name = "rt5058-ldo3";
+			regulator-min-microvolt = <1200000>;
+			regulator-max-microvolt = <3000000>;
+			rt,allow_mode_mask;
+		};
+		rt5058_sldo1: regulator_4 {
+			compatible = "richtek,rt5058-sldo1";
+			interrupt-parent = <&rt5058>;
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <4950000>;
+			rt,allow_mode_mask;
+		};
+		rt5058_sldo2: regulator_5 {
+			compatible = "richtek,rt5058-sldo2";
+			regulator-name = "rt5058-sldo2";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <4950000>;
+			rt,allow_mode_mask;
+		};
+
+		rt5058-fuelgauge {
+			compatible = "richtek,rt5058-fuelgauge";
+			interrupt-parent = <&rt5058>;
+			interrupts = <127>;
+			interrupt-names = "FUEL_IRQ";
+			rt,dtsi_version = <01 805>;
+			rt,battery_type = <4350>; // 4200 4350 4400
+			rt,temp_source_table = <0>;
+			rt,wr_bc_en; // with it -> enable wr_bc, without it -> disable wr_bc
+			rt,fg_oep_threshold = <0x210a>; // battery over energy protection
+			rt,fg_otut_threshold = <0xff00>; // over/under temperature
+			rt,fg_uv_threshold = <213>; // under voltage 0~5100mV(unit: 20mV)
+			rt,fg_sc_step = <16>; // soc chagne alert step (unit 0.0625%)
+			rt,fg_os_threshold = <0xffff>; // over soc
+			rt,fg_us_threshold = <0x0000>; // under soc
+			rt,fg_slpvol_threshold = <0x0096>; // sleep voltage
+			rt,design_capacity = <2100>;
+			rt,fg_op_config = <0x8200 0x0000 0x0000>;
+			rt,fg_soc_config = <0x0110 0x0408>;
+			rt,fg_irq_mask = <0xde7f 0xffff>;
+			rt,fg_voltage_calibration = <0x0000>;
+			rt,fg_current_calibration = <0x8080>;
+			rt,cyc_adj_th = <100>;
+			rt,cyc_adj_rat = <0>;
+			rt,fg_aging_factor = <0x0032>;
+			rt,fg_deadband = <0x0606>;
+			rt,fg_comp_interpolation_order = <1 1 1>;
+			rt,fg_comp_size = <1 3 1>;
+			rt,fg_comp_data = <3200 0    1000 40 25 25 57 128 256 32100 0 2100
+					   3200 150  1000 35 60 25 255 128 256 32100 0 2100
+					   3200 400  1000 55 75 105 155 128 256 32100 0 2100>;
+			rt,offset_interpolation_order = <2 2>;
+			rt,soc_offset_size = <6 1>;
+			rt,soc_offset_data = <0    250 0
+							      15   250 0
+							      19   250 0
+							      20   250 0
+							      100  250 0
+							      1000 250 0>;
+			rt,fg_function_table = <0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+			rt,fg_soc_table = <0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+			rt,use_sc_count;
+		};
+	};
+};

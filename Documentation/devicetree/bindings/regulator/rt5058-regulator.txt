@@ -1,0 +1,95 @@
+RT5058 Regulator Drivre Device Tree Node Property.
+Author: Jeff Chang <jeff_chang@richtek.com>
+
+- compatiblle(str):
+	compatible = "richtek,rt5058-buck1";
+
+- interrupt-parent: (only buck1 node need this)
+	interrupt-parent = <&rt5058>;
+
+- interrupts(u32):	(index of matching interrupts)
+	interrupts = <80>, <81>, <85>, <86>, <87>, <88>, <89>, <92>, <93>, <94>;
+
+- interrupt-names(str): (name of interrupts)
+	interrupt-names = 	"PMIC_BUCK1_OCP",	// 80
+						"PMIC_BUCK1_LV",	// 81
+						"PMIC_OTP",			// 85
+						"PMIC_VDDA_OVP",	// 86
+						"PMIC_VDDA_UV",		// 87
+						"PMIC_SLDO2_LV",	// 88
+						"PMIC_SLDO1_LV",	// 89
+						"PMIC_LDO3_LV",		// 92
+						"PMIC_LDO2_LV",		// 93
+						"PMIC_LDO1_LV";		// 94
+
+
+- regulator-name(str):
+	regulator-name = "rt5058-buck1";
+
+- regulator-min-microvolt(u32):
+	regulator-min-microvolt = <1000000>;
+
+- regulator-max-microvolt(u32):
+	regulator-max-microvolt = <3000000>;
+
+- rt,allow_mode_mask(bool):	/* with it => allow mode change,
+							   without it => not allow mode change */
+	rt,allow_mode_mask;
+
+EX:
+	rt5058_buck1: regulator_0 {
+		compatible = "richtek,rt5058-buck1";
+		interrupt-parent = <&rt5058>;
+
+		interrupts = <80>, <81>, <85>, <86>, <87>, <88>, <89>, <92>, <93>, <94>;
+		interrupt-names = 	"PMIC_BUCK1_OCP",	// 80
+					"PMIC_BUCK1_LV",	// 81
+					"PMIC_OTP",		// 85
+					"PMIC_VDDA_OVP",	// 86
+					"PMIC_VDDA_UV",		// 87
+					"PMIC_SLDO2_LV",	// 88
+					"PMIC_SLDO1_LV",	// 89
+					"PMIC_LDO3_LV",		// 92
+					"PMIC_LDO2_LV",		// 93
+					"PMIC_LDO1_LV";		// 94
+		regulator-name = "rt5058-buck1";
+		regulator-min-microvolt = <1000000>;
+		regulator-max-microvolt = <3000000>;
+		rt,allow_mode_mask;
+	};
+	rt5058_ldo1: regulator_1 {
+		compatible = "richtek,rt5058-ldo1";
+		regulator-name = "rt5058-ldo1";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <3000000>;
+		rt,allow_mode_mask;
+	};
+	rt5058_ldo2: regulator_2 {
+		compatible = "richtek,rt5058-ldo2";
+		regulator-name = "rt5058-ldo2";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <3000000>;
+		rt,allow_mode_mask;
+	};
+	rt5058_ldo3: regulator_3 {
+		compatible = "richtek,rt5058-ldo3";
+		regulator-name = "rt5058-ldo3";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <3000000>;
+		rt,allow_mode_mask;
+	};
+	rt5058_sldo1: regulator_4 {
+		compatible = "richtek,rt5058-sldo1";
+		interrupt-parent = <&rt5058>;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <4950000>;
+		rt,allow_mode_mask;
+	};
+	rt5058_sldo2: regulator_5 {
+		compatible = "richtek,rt5058-sldo2";
+		regulator-name = "rt5058-sldo2";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <4950000>;
+		rt,allow_mode_mask;
+	};
+

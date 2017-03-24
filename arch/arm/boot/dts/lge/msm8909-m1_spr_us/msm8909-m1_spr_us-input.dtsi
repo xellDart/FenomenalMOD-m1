@@ -1,0 +1,57 @@
+/* Copyright (c) 2012, Code Aurora Forum. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	i2c@78b9000 { /* BLSP1 QUP5 */
+		qcom,clk-freq-out = <400000>;
+		//lge_touch_rev_a@34 {
+		lge_touch@34 {
+			compatible = "unified_driver,ver2";
+			//revision = "...rev_0";
+			//revision = "rev_a...rev_c","rev_e...";
+			reg = <0x34>;
+			status = "ok";
+
+			//pinctrl-names = "pmx_ts_active","pmx_ts_suspend";
+			pinctrl-names = "default","sleep";
+			pinctrl-0 = <&ts_int_active &ts_reset_active>;
+			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+
+			//vdd-supply = <&pm8916_l15>;
+			//vddio-supply = <&pm8916_l16>;
+
+			interrupt-parent = <&msm_gpio>;
+			interrupts = <13 0x2>;
+			lge,scl-gpio = <&msm_gpio 19 0x00>;
+			lge,sda-gpio = <&msm_gpio 18 0x00>;
+			lge,int-gpio = <&msm_gpio 13 0x00>;
+			lge,rst-gpio = <&msm_gpio 12 0x00>;
+			//vdd-supply = <&pm8916_l10>;
+		};
+/*
+		lge_touch_rev_a@34 {
+			compatible = "unified_driver,ver2";
+			revision = "rev_a...";
+			reg = <0x34>;
+			status = "ok";
+
+			pinctrl-names = "pmx_ts_active","pmx_ts_suspend";
+			pinctrl-0 = <&ts_int_active &ts_reset_active>;
+			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+
+			vdd-supply = <&pm8916_l16>;
+			vddio-supply = <&pm8916_l6>;
+		};
+*/
+	};
+};
+

@@ -1,0 +1,170 @@
+RT5058 Charger Driver Device Tree Node Property.
+Author: Jeff Chang <jeff_chang@richtek.com>
+
+
+- compatible:
+	compatible = "richtek,rt5058-charger";
+
+- rt,charger-name(str): (charger name, please use rt5058-charger for charger name)
+	rt,charger-name = "rt5058-charger";
+
+- rt,use_te(bool): Enable/Disable TE function
+	rt,use_te;
+
+- rt,use_batdet(bool): Enable/Disable Battery Detection Function
+	rt,use_batdet;
+
+- rt,use_iinmeas(bool): IIN measurement mechanism (enable/disable)
+	rt,use_iinmeas;
+
+- rt,use_mivr(bool):	MIVR function (enable/disable)
+	rt,use_mivr;
+
+- rt,mivr(u32): MIVR
+	rt,mivr = <4600>;
+
+- rt,chg_iin_vth: IIN measurement Detection comparator threshold
+	rt,chg_iin_vth = <4600>;	/* 4100~4600 */
+
+- rt,use_aicr(bool):	AICR function (enable/disable)
+	rt,use_aicr;
+
+- rt,usb_aicr(u32): input current limit for USB
+	rt,usb_aicr = <1000>;
+
+- rt,usb_icc(u32): charging current for usb
+	rt,usb_icc = <1000>;
+
+- rt,ac_aicr(u32): input current limit for AC
+	rt,ac_aicr = <1000>; /* mA */
+
+- rt,ac_icc(u32): charging current for AC
+	rt,ac_icc = <1000>; /* mA */
+
+- rt,chg_volt(u32): charging voltage(CV)
+	rt,chg_volt = <4400>; /* mV */
+
+- rt,bst_volt(32): boost mode voltage
+	rt,bst_volt = <5000>; /* mV */
+
+- rt,ieoc(u32): End of Charge Current
+	rt,ieoc = <250>; /* mA */
+
+- rt,prechg_volt(u32): Pre-charge Thresholg Voltage
+	rt,prechg_volt = <2800>; /* mV */
+
+- rt,prechg_curr(u32): Pre-charge Current
+	rt,prechg_curr = <150>; /* mV */
+
+- rt,use_lbp(bool): Low Battery Protection (enable/disable)
+	rt,use_lbp;
+
+- rt,lbp_volt(u32): Low Battery Protection Voltage
+	rt,lbp_volt = <2800>; /* mV */
+
+- rt,backchg_time(u32): Background Charge Time after EOC occures.
+	rt,backchg_tiem = <0>;	/* 0: 0mins, 1: 30mins, 2: 45mins, 3: 60mins */
+
+- rt,iinlmt_sel(u32): Input Current Limet Selection.
+	rt,iinlmt_sel = <1>;
+	/* 0 : CHG_TYP results is applied and ignore AICR.
+	   1 : AICR is applied and ignore CHG_TYP results.
+	   2 : Input limit is set to the higher level of AICR and CHG_TYP result.
+	   3 : Input limit is set to the lower level of AICR and CHG_TYP result. */
+
+- rt,sel_swfreq(u32):  Charger Switching Frequency (Charger/OTG)
+	rt,sel_swfreq = <0>; 	/* 0 : Charger switching frequency is 1.5MHz.
+				   1 : Charger switching frequency is 0.75MHz . */
+
+- rt,fixfreq(u32):	Charger switching frequency
+	rt,fixfreq = <0>;	/* 0 : charger switching frequency is varied.
+				   1 : charger switching frequency is fixed. */
+
+- rt,fc_timer(u32): Fast Charge Timer
+	rt,fc_timer = <0>;	/* 0~6 : 4hrs~16hrs, 7: Timer disable */
+
+- rt,prc_timer(u32): Pre-Charge Timer
+	rt,prc_timer = <0>;	/* 0: 30mins, 1: 45mins, 2: 60mins, 3:disable */
+
+- rt,sys_minvolt(u32): System UV Protection.
+	rt,sys_minvolt = <1>;	/* 0: 3.5V, 1: 3.6V, 2: 3.7V, 4: 3.8V */
+
+- interrupt-parent:
+	interrupt-parent = <&rt5502>;
+
+- interrupts: (the index of interrups)
+	interrupts = 	<24>, <25>, <26>, <27>, <32>, <33>, <34>, <36>, <37>,
+			<38>, <39>, <40>, <41>, <42>, <43>, <53>, <54>, <55>;
+
+- interrupt-names: (name of interrups)
+	interrupt-names = 	"CHG_IIN_MEAS",	// 24
+				"CHG_ICC_MEAS",	// 25
+				"CHG_MIVR",	// 26
+				"CHG_PWR_RDY",	// 27
+				"CHG_BATABS",	// 32
+				"CHG_SYSUV",	// 33
+				"CHG_TMR",	// 34
+				"CHG_BATOV",	// 36
+				"CHG_BADADP",	// 37
+				"CHG_RVP",	// 38
+				"CHG_TSSHD",	// 39
+				"CHG_TREG",	// 40
+				"CHG_RCHG",	// 41
+				"CHG_TERMTMR",	// 42
+				"CHG_IEOC",	// 42
+				"CHG_BSTLV",	// 53
+				"CHG_BSTOL",	// 54
+				"CHG_BSTOVP";	// 55
+- rt,chg_irq_mask(u32): charger irq mask
+	rt,chg_irq_mask = <0xf0 0x08 0xf0 0x1f 0xff>
+
+- rt,hocp(u32) : charger The OCP
+	-rt,hocp = <0>; /* 0 is 2.5A, 1 is 3.5A */
+
+- rt,temp_level(u32): temperature level range
+	rt,temp_level = <(-40) 10 25 70>; // temperature levels for JEITA
+
+- rt,use_jeita(bool) : Enable/Disable JEITA function
+	rt,use_jeita;
+
+EX:
+	rt5058-charger {
+				compatible = "richtek,rt5058-charger";
+				rt,charger-name = "rt5058-charger";
+				rt,use_te;
+				//rt,use_batdet;
+				rt,use_iinmeas;
+				rt,use_mivr;
+				rt,mivr = <4400>;
+				rt,chg_iin_vth = <4800>;
+				rt,use_aicr;
+				rt,usb_aicr = <1400>;
+				rt,usb_icc = <1400>;
+				rt,ac_aicr = <1400>;
+				rt,ac_icc = <1400>;
+				rt,chg_volt = <4350>;
+				rt,bst_volt = <5000>;
+				rt,ieoc = <50>; /* 0: Disable, 1~19: 50mA~500mA */
+				rt,prechg_volt = <2800>;
+				rt,prechg_curr = <150>;
+				rt,use_lbp; /* with it: enable low battery protection,
+							   without it:disable */
+				rt,lbp_volt = <2800>;
+				rt,backchg_time = <0>;
+				rt,iinlmt_sel = <1>; /* 0:by chg_type,
+							1:by aicr,
+							2:MAX(aicr, chg_type),
+							3:MIN(aicr, chg_type) */
+				rt,sel_swfreq = <0>;
+				rt,fixfreq = <0>;
+				rt,fc_timer = <0>; /* 0~7: 4~16hr, 8:disable timer */
+				rt,prc_timer = <0>; /* 0~2: 30,45,60 mins, 3:disable timer */
+				rt,sys_minvolt = <1>; /* 0~3: 3.5V~3.8V */
+				interrupt-parent = <&rt5058>;
+				interrupts = <124>;
+				interrupt-names = "CHG_IRQ";	// 124
+				rt,chg_irq_mask = <0xf0 0x08 0xf0 0x1f 0xff>;
+				rt,hocp = <0>; /* 0 is 2.5A, 1 is 3.5A */
+				rt,temp_level = <(-40) 10 25 70>; // temperature levels for JEITA
+				//rt,use_jeita;
+			};

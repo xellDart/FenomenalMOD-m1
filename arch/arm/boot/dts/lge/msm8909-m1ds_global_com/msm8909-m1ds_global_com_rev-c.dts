@@ -1,0 +1,69 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "msm8909-m1ds_global_com.dtsi"
+#include "../../qcom/msm8909-pm8916.dtsi"
+#include "msm8909-pm8916-m1ds_global_com.dtsi"
+#include "msm8909-m1ds_global_com-input.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM8909 PM8916 M1DS_GLOBAL_COM";
+	compatible = "qcom,msm8909";
+	qcom,board-id= <0x564 2>, /* rev_c */
+	               <0xA64 2>, /* rev_1_0 */
+	               <0xB64 2>; /* rev_1_1 */
+};
+
+&mdss_dsi0 {
+    lge,dsv-toggle-enabled;
+    /delete-property/ qcom,platform-enp-gpio;
+    /delete-property/ qcom,platform-enn-gpio;
+};
+
+&soc {
+    i2c@78b9000 {
+        lge_touch@34 {
+            pinctrl-0 = <&ts_int_active &ts_reset_active &ts_control_default>;
+            pinctrl-1 = <&ts_int_suspend &ts_reset_suspend &ts_control_suspend>;
+        };
+    };
+};
+
+&soc {
+    tlmm_pinmux: pinctrl@1000000 {
+        pmx_ts_control_default {
+            qcom,pins = <&gp 93>;
+            qcom,pin-func = <0>;
+            qcom,num-grp-pins = <1>;
+            label = "pmx_ts_control_default";
+
+            ts_control_default: ts_control_default {
+                drive-strength = <6>;
+                bias-pull-up;
+            };
+        };
+
+        pmx_ts_control_suspend {
+            qcom,pins = <&gp 93>;
+            qcom,pin-func = <0>;
+            qcom,num-grp-pins = <1>;
+            label = "pmx_ts_control_suspend";
+
+            ts_control_suspend: ts_control_suspend {
+                drive-strength = <2>;
+                bias-pull-down;
+            };
+        };
+    };
+};

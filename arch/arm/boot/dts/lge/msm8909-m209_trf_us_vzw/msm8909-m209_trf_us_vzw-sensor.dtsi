@@ -1,0 +1,103 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&i2c_1 { /* BLSP1 QUP1 */
+	partron@53 { /* Ambient light and proximity sensor */
+		compatible = "partron,pas230";
+		reg = <0x53>;
+		status = "ok";
+		pinctrl-names = "default","sleep";
+		pinctrl-0 = <&pas230_int_active>;
+		pinctrl-1 = <&pas230_int_suspend>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <95 0x2002>;
+		Partron,vdd_ana-supply = <&pm8916_l17>;
+		Partron,vddio_i2c-supply = <&pm8916_l6>;
+		Partron,irq-gpio = <&msm_gpio 95 0x2002>;
+		partron,i2c-pull-up;
+		Partron,vdd_ana_supply_min = <2850000>;
+		Partron,vdd_ana_supply_max = <3300000>;
+		Partron,vdd_ana_load_ua = <15000>;
+		Partron,vddio_dig_supply_min = <1800000>;
+		Partron,vddio_dig_supply_max = <1800000>;
+		Partron,vddio_dig_load_ua = <10000>;
+		Partron,vddio_i2c_supply_min = <1800000>;
+		Partron,vddio_i2c_supply_max = <1800000>;
+		Partron,vddio_i2c_load_ua = <10000>;
+		Partron,near_offset = <20>;
+		Partron,far_offset = <10>;
+		Partron,crosstalk_max = <100>;
+	};
+
+	st_k303b_acc@1d {
+		compatible = "st,k303b_acc";
+		reg = <0x1d>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <96 0x2>;
+		st,vdd_ana-supply = <&pm8916_l17>;
+		st,vddio_i2c-supply = <&pm8916_l6>;
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&st_k303b_acc_int_active>;
+		pinctrl-1 = <&st_k303b_acc_int_suspend>;
+		st,irq-gpio = <&msm_gpio 96 0x00>;
+		st,axis_map_x = <1>;
+		st,axis_map_y = <0>;
+		st,axis_map_z = <2>;
+		st,negate_x = <1>;
+		st,negate_y = <1>;
+		st,negate_z = <0>;
+		st,poll_interval = <100>;
+		st,min_interval = <2>;
+		st,fs_range = <32>;
+
+	};
+
+	/* Magnetic Sensor Driver */
+	st_k303b_mag@1e {
+		compatible = "st,k303b_mag";
+		reg = <0x1e>;
+		interrupt-parent = <&msm_gpio>;
+		interrupts = <65 0x2>;
+		st,vdd_ana-supply = <&pm8916_l17>;
+		st,vddio_i2c-supply = <&pm8916_l6>;
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&st_k303b_mag_active>;
+		pinctrl-1 = <&st_k303b_mag_suspend>;
+		st,irq-gpio = <&msm_gpio 65 0x00>;
+		st,axis_map_x = <1>;
+		st,axis_map_y = <0>;
+		st,axis_map_z = <2>;
+		st,negate_x = <1>;
+		st,negate_y = <1>;
+		st,negate_z = <0>;
+		st,poll_interval = <100>;
+		st,min_interval = <13>;
+		st,fs_range = <96>;
+	};
+};
+
+/*sysfs node for unified usercal*/
+/{
+	lge,sensor-sysfs {
+		compatible = "lge,sensor-sysfs";
+
+		sysfs,node =
+			/* group , user_node,  kernel node */
+			"accelerometer", "run_calibration",  "/sys/devices/virtual/input/lge_accelerometer/run_fast_calibration",
+			"accelerometer", "selftest",         "/sys/devices/virtual/input/lge_accelerometer/selftest",
+//			"gyroscope",     "run_calibration",  "/sys/devices/virtual/input/lge_gyroscope/run_calibration",
+//			"gyroscope",     "selftest",         "/sys/devices/virtual/input/lge_gyroscope/selftest",
+			"proximity",     "run_calibration",  "/sys/devices/virtual/input/lge_proximity/run_calibration",
+			"proximity",     "calibration_data", "/sys/devices/virtual/input/lge_proximity/prox_cal_data"
+			;
+	};
+};

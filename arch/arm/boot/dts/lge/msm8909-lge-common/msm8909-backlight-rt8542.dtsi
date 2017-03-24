@@ -1,0 +1,33 @@
+&i2c_6 {
+	rt8542@39 {
+			compatible = "richtek,rt8542";
+			status = "ok";
+			reg = <0x39>;
+			richtek,bl-en-gpio = <&msm_gpio 24 0x00>;
+
+			backlight {
+				compatible = "richtek,rt8542-backlight";
+				bl-name = "rt8542";
+				blmap_size = <128>;
+				initial-brightness = <112>;
+				blmap = <
+					1 1 1 1 1 1 1 2 2 2 2 2 2
+					2 2 2 2 3 3 3 3 3 3 3 3 3
+					3 3 3 3 4 4 6 7 7 8 8 9 9
+					9 9 9 10 10 10 10 10 11 11 12 12 12
+					12 13 13 14 15 16 17 18 19 20 20 21 21
+					21 21 23 24 24 26 26 26 27 28 29 32 32
+					32 32 32 34 34 37 37 37 40 40 40 43 43
+					43 43 43 48 48 51 51 51 56 56 56 59 59
+					59 59 59 63 65 67 69 71 74 76 77 78 78
+					78 78 78 82 86 90 94 96 97 97 97>;
+			};
+			led_flash0: flash {
+				compatible = "richtek,rt8542-flash";
+				cell-index = <0>;
+				qcom,flash-type = <1>;
+				qcom,flash-name = "rt8542_flash";
+				label = "rt8542_flash";
+			};
+	 };
+};

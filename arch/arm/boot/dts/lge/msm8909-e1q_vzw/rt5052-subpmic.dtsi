@@ -1,0 +1,275 @@
+/* Copyright (c) 2015, The Linux Foundation. All rights reversed.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+&soc {
+	battery {
+			compatible = "richtek,battery";
+			rt,polling_time = <60000 10000 30000 60000 10000 120000>; // polling_time < "Unknown, Charging, Discharging, NotCharging, Full, Sleep">
+			rt,battery_name = "battery";
+			rt,fuel_name = "rt5052-fuelgauge";
+			rt,chg_name = "rt5052-charger";
+			rt,ac_name = "lg-ac";
+			rt,usb_name = "lg-usb";
+	 		rt,max_voltage = <4400>;
+			rt,min_voltage = <3750>;
+	};
+
+	i2c@78b8000{ /* BLSP1 QUP4 */
+		status = "ok";
+
+		rt5052: rt5052@34 {
+			compatible = "richtek,rt5052";
+			reg = <0x34>;
+			interrupt-controller;
+			#interrupt-cells = <1>;
+			rt,irq_pin = <&msm_gpio 20 0>;
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&rt5052_int_active>;
+			pinctrl-1 = <&rt5052_int_sleep>;
+			rt,i2cstmr_rsttmr = <0>; /* 0: 0.5 sec, 1: 0.75 sec, 2: 1 sec, 3: 2 sec */
+	
+			rt5052-charger {
+				compatible = "richtek,rt5052-charger";
+				rt,charger-name = "rt5052-charger";
+				rt,use_iinmeas;
+				rt,use_mivr;
+				rt,mivr = <4400>;
+				rt,use_aicr;
+				rt,aicr = <1000>;
+				rt,chg_iin_vth = <4800>;
+				rt,icc = <900>;
+				rt,chg_volt = <4350>;
+				rt,bst_volt = <5000>;
+				rt,ieoc = <50>; /* 0: Disable, 1~19: 50mA~500mA */
+				rt,prechg_volt = <2800>;
+				rt,prechg_curr = <150>;
+				rt,use_lbp; /* with it: enable low battery protection, without it:disable */
+				rt,lbp_volt = <2800>;
+				rt,backchg_time = <0>;
+				rt,iinlmt_sel = <1>; /* 0:by chg_type, 1:by aicr, 2:MAX(aicr, chg_type), 3:MIN(aicr, chg_type) */
+				rt,sel_swfreq = <0>;
+				rt,fixfreq = <0>;
+				rt,fc_timer = <0>; /* 0~7: 4~16hr, 8:disable timer */
+				rt,prc_timer = <0>; /* 0~2: 30,45,60 mins, 3:disable timer */
+				rt,sys_minvolt = <1>; /* 0~3: 3.5V~3.8V */
+				interrupt-parent = <&rt5052>;
+				interrupts = <124>;
+				interrupt-names = "CHG_IRQ";
+				rt,chg_irq_mask = <0xf0 0x08 0xf0 0x1f 0xff>;
+				/*
+				interrupts = 	<24>, <25>, <26>, <27>, <32>, <33>, <34>, <36>, <37>,
+						<38>, <39>, <40>, <41>, <42>, <43>, <53>, <54>, <55>;
+				interrupt-names = 	"CHG_IIN_MEAS",	// 24
+							"CHG_ICC_MEAS",	// 25
+							"CHG_MIVR",	// 26
+							"CHG_PWR_RDY",	// 27
+							"CHG_BATABS",	// 32
+							"CHG_SYSUV",	// 33
+							"CHG_TMR",	// 34
+							"CHG_BATOV",	// 36
+							"CHG_BADADP",	// 37
+							"CHG_RVP",	// 38
+							"CHG_TSSHD",	// 39
+							"CHG_TREG",	// 40
+							"CHG_RCHG",	// 41
+							"CHG_TERMTMR",	// 42
+							"CHG_IEOC",	// 42
+							"CHG_BSTLV",	// 53
+							"CHG_BSTOL",	// 54
+							"CHG_BSTOVP";	// 55 
+				*/
+				/* Each model is defferently value */
+				lge,no-init-cable = <0 0 0>;
+				lge,cable-mhl-1k = <5000 500 500>;
+				lge,cable-u-28p7k = <5500 1200 500>;
+				lge,cable-28p7k = <6000 1200 500>;
+				lge,cable-56k = <200000 1500 1500>;
+				lge,cable-100k = <239000 1200 500>;
+				lge,cable-130k = <340000 1500 1500>;
+				lge,cable-180k = <400000 1200 500>;
+				lge,cable-200k = <410000 1200 500>;
+				lge,cable-220k = <485000 1200 500>;
+				lge,cable-270k = <560000 1200 500>;
+				lge,cable-330k = <735000 1200 500>;
+				lge,cable-620k = <955000 1200 500>;
+				lge,cable-910k = <1140000 1500 1500>;
+				lge,cable-none = <1900000 1200  500>;
+			};
+
+			rt5052-fled {
+				compatible = "richtek,rt5052-fled";
+				rt,control_mode = <1>; /* 0:i2c control, 1:pin control */
+				interrupt-parent = <&rt5052>;
+				interrupts = <125>;
+				interrupt-names = "FLED_IRQ";
+				rt,fled_irq_mask = <0x30 0xc0>;
+				/*
+				interrupts =	<64>, <65>, <67>, <70>, <71>, <72>,
+					     	<73>, <74>, <75>, <76>, <77>; 
+				interrupt-names =	"FLED_STRBPIN",		// 64
+						 	"FLED_TORPIN",		// 65
+						  	"FLED_LVF",		// 67
+							"FLED_LED2_SHORT",	// 70
+							"FLED_LED1_SHORT",	// 71
+							"FLED_LED2_STRB",	// 72
+							"FLED_LED1_STRB",	// 73
+							"FLED_LED2_STRB_TO",	// 74
+							"FLED_LED1_STRB_TO",	// 75
+							"FLED_LED2_TOR",	// 76
+							"FLED_LED1_TOR";	// 77
+				*/
+				rt,torch_en = <1 1>;
+				rt,flash_en = <1 1>;
+			};
+
+			rt5052_buck1: regulator_0 {
+				compatible = "richtek,rt5052-buck1";
+				interrupt-parent = <&rt5052>;
+				interrupts = <126>;
+				interrupt-names = "PMIC_IRQ";
+				rt,pmic_irq_mask = <0x1c 0x8c>;
+				/*
+				interrupts = <80>, <81>, <85>, <86>, <87>, <88>, <89>, <92>, <93>, <94>;
+				interrupt-names = 	"PMIC_BUCK1_OCP",	// 80
+							"PMIC_BUCK1_LV",	// 81
+							"PMIC_OTP",		// 85
+							"PMIC_VDDA_OVP",	// 86
+							"PMIC_VDDA_UV",		// 87
+							"PMIC_SLDO2_LV",	// 88
+							"PMIC_SLDO1_LV",	// 89
+							"PMIC_LDO3_LV",		// 92
+							"PMIC_LDO2_LV",		// 93
+							"PMIC_LDO1_LV";		// 94
+				*/
+				regulator-name = "rt5052-buck1";
+				regulator-min-microvolt = <1000000>;
+				regulator-max-microvolt = <3000000>;
+				rt,allow_mode_mask;
+			};
+			rt5052_ldo1: regulator_1 {
+				compatible = "richtek,rt5052-ldo1";
+				regulator-name = "rt5052-ldo1";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <3000000>;
+				rt,allow_mode_mask;
+			};
+			rt5052_ldo2: regulator_2 {
+				compatible = "richtek,rt5052-ldo2";
+				regulator-name = "rt5052-ldo2";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <3000000>;
+				rt,allow_mode_mask;
+			};
+			rt5052_ldo3: regulator_3 {
+				compatible = "richtek,rt5052-ldo3";
+				regulator-name = "rt5052-ldo3";
+				regulator-min-microvolt = <1200000>;
+				regulator-max-microvolt = <3000000>;
+				rt,allow_mode_mask;
+			};
+			rt5052_sldo1: regulator_4 {
+				compatible = "richtek,rt5052-sldo1";
+				interrupt-parent = <&rt5052>;
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <4950000>;
+				rt,allow_mode_mask;
+			};
+			rt5052_sldo2: regulator_5 {
+				compatible = "richtek,rt5052-sldo2";
+				regulator-name = "rt5052-sldo2";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <4950000>;
+				rt,allow_mode_mask;
+			};
+
+			rt5052-fuelgauge {
+				compatible = "richtek,rt5052-fuelgauge";
+				interrupt-parent = <&rt5052>;
+				interrupts = <127>;
+				interrupt-names = "FUEL_IRQ";
+				/*
+				interrupts = 	<100>, <101>, <104>, <109>, <111>;	
+				interrupt-names =	//"FUEL_FG_EOD",      // 97
+							//"FUEL_FG_EOC",      // 98
+							//"FUEL_FG_US",       // 99
+							"FUEL_FG_OS",       // 100
+							"FUEL_FG_UV",       // 101
+							//"FUEL_FG_UT",       // 102
+							//"FUEL_FG_OT",       // 103
+							"FUEL_FG_RI",       // 104
+							//"FUEL_FG_SHDN",     // 106
+							//"FUEL_FG_SLP",      // 107
+							//"FUEL_FG_PRES_RDY", // 108
+							"FUEL_FG_OEP_ACT",  // 109
+							//"FUEL_FG_BAT_TYPE", // 110
+							"FUEL_FG_BAT_PRES"; // 111
+							//"FUEL_FG_DSG",      // 119
+							//"FUEL_FG_RDY",      // 121
+							//"FUEL_FG_QSDONE";   // 122
+				*/
+				rt,dtsi_version = <01 515>;
+				//rt,id = <0>; /* -1 means auto, detected by F/G */
+				rt,battery_type = <4350>; /* 4200 4350 4400 */
+				rt,temp_source_table = <0>;
+				//rt,wr_bc_en; /* with it -> enable wr_bc, without it -> disable wr_bc */
+				rt,fg_oep_threshold = <0x210a>; /* battery over energy protection */
+				rt,fg_otut_threshold = <0xff00>; /* over/under temperature */
+				rt,fg_uv_threshold = <0x0000>; /* under voltage */
+				rt,fg_os_threshold = <0xffff>; /* over soc */
+				rt,fg_us_threshold = <0x0000>; /* under soc */
+				rt,fg_slpvol_threshold = <0x0096>; /* sleep voltage */
+				rt,design_capacity = <2100>;
+				rt,fg_op_config = <0x8000 0x0000 0x0000>; /* disable OEP */
+				rt,fg_soc_config = <0x0000 0x0400>;
+				rt,irq_times = <100 108>;
+				rt,fg_irq_mask = <0xc7ff 0xffff>;  
+				rt,fg_voltage_calibration = <0x0000>;
+				rt,fg_current_calibration = <0x8080>;
+				rt,cyc_adj_th = <100>;
+				rt,cyc_adj_rat = <0>;
+				rt,fg_aging_factor = <0x0032>;
+				rt,fg_deadband = <0x0606>;
+				rt,fg_comp_interpolation_order = <1 1 1>; /* necessary */
+				rt,fg_comp_size = <1 3 1>;
+				rt,fg_comp_data = <	3200 (-1) 1000 40 25 25 57 0 256 32100 0 2100
+				 				3200 0    1000 35 60 25 255 0 256 32100 0 2100
+				 				3200 40   1000 55 75 105 155 0 256 32100 0 2100>;
+				rt,offset_interpolation_order = <2 2>; /* necessary */
+				rt,soc_offset_size = <6 1>;
+				rt,soc_offset_data = <0    250 0
+						      15   250 0
+						      19   250 0
+						      20   250 0
+						      100  250 0
+						      1000 250 0>;
+				rt,fg_function_table = <0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+							0 0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+				rt,fg_soc_table = <0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+					    	   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0
+						   0x0 0x0 0x0 0x0 0x0 0x0 0x0 0x0>;
+				rt,capacity_max = <1000>;
+				rt,capacity_max_margin = <30>;
+				rt,capacity_min = <0>;
+			};
+		};
+	};
+};

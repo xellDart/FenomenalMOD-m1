@@ -1,0 +1,64 @@
+RT5058 FLED Driver Device Tree Node Property
+Author: Jeff Chang <jeff_chang@richtek.com>
+
+- compatible(str):
+	compatible = "richtek,rt5058-fled";
+
+- rt,control_mode(u32):	Fled Control Mode
+	rt,control_mode = <1>;	/* 0 : i2c contrl
+				   1 : pin contrl */
+
+- interrupt-parent:
+	intrerrupt-parent = <&rt5058>;
+
+- interrupts:	(index of interrupt)
+	interrupts =	<64>, <65>, <67>, <70>, <71>, <72>,
+		     	<73>, <74>, <75>, <76>, <77>;
+
+- interrup-names:	(name of interrups)
+	interrupt-names =	"FLED_STRBPIN",		// 64
+			 	"FLED_TORPIN",		// 65
+			  	"FLED_LVF",		// 67
+				"FLED_LED2_SHORT",	// 70
+				"FLED_LED1_SHORT",	// 71
+				"FLED_LED2_STRB",	// 72
+				"FLED_LED1_STRB",	// 73
+				"FLED_LED2_STRB_TO",	// 74
+				"FLED_LED1_STRB_TO",	// 75
+				"FLED_LED2_TOR",	// 76
+				"FLED_LED1_TOR";	// 77
+
+
+- rt,torch_en(u32 array):	led selection in torch mode.
+	rt,torch_en = <1 1>;	/* <0 0>: both disable,
+							   <1 0>: led1 enable ,
+							   <0 1>: led2 enable,
+							   <1 1>: both enable */
+
+- rt,flash_en(u32 array):	led selection in strobe mode.
+	rt,flash_en = <1 1>;	/* <0 0>: both disable,
+							   <1 0>: led1 enablee,
+							   <0 1>: led2 enable,
+							   <1 1>: both enable */
+
+EX:
+	rt5058-fled {
+		compatible = "richtek,rt5058-fled";
+		rt,control_mode = <1>; /* 0:i2c control, 1:pin control */
+		interrupt-parent = <&rt5058>;
+		interrupts =	<64>, <65>, <67>, <70>, <71>, <72>,
+			     	<73>, <74>, <75>, <76>, <77>;
+		interrupt-names =	"FLED_STRBPIN",		// 64
+				 	"FLED_TORPIN",		// 65
+				  	"FLED_LVF",		// 67
+					"FLED_LED2_SHORT",	// 70
+					"FLED_LED1_SHORT",	// 71
+					"FLED_LED2_STRB",	// 72
+					"FLED_LED1_STRB",	// 73
+					"FLED_LED2_STRB_TO",	// 74
+					"FLED_LED1_STRB_TO",	// 75
+					"FLED_LED2_TOR",	// 76
+					"FLED_LED1_TOR";	// 77
+		rt,torch_en = <1 1>;
+		rt,flash_en = <1 1>;
+	};

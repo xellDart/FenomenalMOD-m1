@@ -1,0 +1,34 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "msm8909-e1q_trf_us_vzw.dtsi"
+#include "../../qcom/msm8909-pm8916.dtsi"
+#include "msm8909-pm8916-e1q_trf_us_vzw.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM8909 PM8916 E1Q TRF US";
+	compatible = "qcom,msm8909";
+	qcom,board-id= <0x064 0>, /* evb1 */
+	               <0x164 0>, /* evb2 */
+	               <0x264 2>, /* rev_0 */
+	               <0x364 2>; /* rev_a */
+};
+
+&sdhc_2 {
+	cd-gpios = <&msm_gpio 38 0x1>;
+};
+
+&sdc2_cd_on {
+	bias-pull-up;
+};

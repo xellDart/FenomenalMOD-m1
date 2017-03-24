@@ -1,0 +1,144 @@
+/* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "msm8909-m1_mpcs_us.dtsi"
+#include "../../qcom/msm8909-pm8916.dtsi"
+#include "msm8909-pm8916-m1_mpcs_us.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM8909 PM8916 M1_MPCS_US";
+	compatible = "qcom,msm8909";
+	qcom,board-id= <0x564 2>, /* rev_c */
+	               <0xA64 2>, /* rev_1_0 */
+	               <0xB64 2>; /* rev_1_1 */
+};
+
+&soc {
+
+	i2c@78b9000 {
+		lge_touch@34 {
+			vdd-supply = <&pm8916_l16>;
+			vddio-supply = <&pm8916_l6>;
+
+			pinctrl-0 = <&ts_int_active &ts_reset_active &ts_control_default>;
+		        pinctrl-1 = <&ts_int_suspend &ts_reset_suspend &ts_control_suspend>;
+		};
+	};
+
+	tlmm_pinmux: pinctrl@1000000 {
+	        pmx_ts_control_default {
+	            qcom,pins = <&gp 93>;
+	            qcom,pin-func = <0>;
+	            qcom,num-grp-pins = <1>;
+	            label = "pmx_ts_control_default";
+
+	            ts_control_default: ts_control_default {
+	                drive-strength = <6>;
+	                bias-pull-up;
+	            };
+	        };
+
+	        pmx_ts_control_suspend {
+	            qcom,pins = <&gp 93>;
+	            qcom,pin-func = <0>;
+	            qcom,num-grp-pins = <1>;
+	            label = "pmx_ts_control_suspend";
+
+	            ts_control_suspend: ts_control_suspend {
+	                drive-strength = <2>;
+	                bias-pull-down;
+	            };
+	        };
+	};
+};
+&i2c_1 { /* Sensor VDD for REV.B */
+        st_k303b_acc@1d {
+            st,vdd_ana-supply = <&pm8916_l17_sns>;
+        };
+        st_k303b_mag@1e {
+            st,vdd_ana-supply = <&pm8916_l17_sns>;
+        };
+        rpr05210@38 {
+            Rohm,vdd-supply = <&pm8916_l17_sns>;
+        };
+};
+&sdhc_2 {
+	vdd-supply = <&pm8916_l11>;
+	qcom,vdd-voltage-level = <1800000 2950000>;
+	qcom,vdd-current-level = <15000 400000>;
+	status = "ok";
+};
+
+&mdss_dsi0 {
+	vdd-supply = <&pm8916_l16>;
+	vddio-supply = <&pm8916_l6>;
+	lge,dsv-toggle-enabled;
+	/delete-property/ qcom,platform-enp-gpio;
+	/delete-property/ qcom,platform-enn-gpio;
+};
+
+&rpm_bus {
+	rpm-regulator-ldoa16 {
+		status = "okay";
+		pm8916_l16: regulator-l16 {
+		    compatible = "qcom,rpm-smd-regulator";
+		    regulator-min-microvolt = <3000000>;
+		    regulator-max-microvolt = <3300000>;
+		    qcom,init-voltage = <3000000>;
+		    regulator-name = "pm8916_l16";
+		    regulator-always-on;
+		    status = "okay";
+	    };
+	};
+
+
+	rpm-regulator-ldoa10 {
+		status = "okay";
+		pm8916_l10: regulator-l10 {
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+			qcom,init-voltage = <2800000>;
+			status = "okay";
+		};
+	};
+    rpm-regulator-ldoa17 {
+        status = "ok";
+        pm8916_l17_sns: regulator-l17_sns {
+            status = "ok";
+            compatible = "qcom,rpm-smd-regulator";
+            regulator-name = "8916_l17_sns";
+            qcom,set = <3>;
+            regulator-min-microvolt = <1800000>;
+            regulator-max-microvolt = <2950000>;
+            qcom,init-voltage = <2800000>;
+            regulator-always-on;
+            };
+        };
+};
+&pm8916_chg {
+	status = "ok";
+};
+&pm8916_bms {
+	status = "ok";
+};
+&soc {
+	battery {
+		status = "disabled";
+	};
+};
+&i2c_4 {
+	rt5058: rt5058@34 {
+		status = "disabled";
+	};
+};

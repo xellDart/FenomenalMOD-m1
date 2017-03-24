@@ -1,0 +1,38 @@
+RT Battery Driver Device Tree Property
+
+- compatible(str)
+	compatible = "richtek,battery";
+
+- rt,battery_name(str): name of battery power supply
+	rt,battery_name = "lg-battery";
+
+- rt,fuel_name(str): name of fuelgauge power supply
+	rt,fuel_name = "rt5058-fuelgauge";
+
+- rt,chg_name(str): name of charger power supply
+	rt,chg_name = "rt5058-charger";
+
+- rt,ac_name(str): name of ac power supply
+	rt,ac_name = "lg-ac";
+
+- rt,usb_name(str): name of usb power supply
+	rt,usb_name = "lg-usb";
+
+- rt,max_voltage(u32): the max voltage of battery
+	rt,max_voltage = <4400>;
+
+- rt,min_voltage(u32):  the min voltage of battery
+	rt,min_voltage = <3750>;
+
+
+EX:
+	battery {
+		compatible = "richtek,battery";
+		rt,battery_name = "battery";
+		rt,fuel_name = "rt5058-fuelgauge";
+		rt,chg_name = "rt5058-charger";
+		rt,ac_name = "ac";
+		rt,usb_name = "usb";
+		rt,max_voltage = <4400>;
+		rt,min_voltage = <3750>;
+	};
